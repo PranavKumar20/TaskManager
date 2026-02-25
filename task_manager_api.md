@@ -63,7 +63,7 @@ GET /api/v1/users/{user_id}
 
 DELETE /api/v1/users/{user_id}
 
-#### ⏳ Update User
+#### ✅ Update User
 
 PUT /api/v1/users/{user_id}
 
