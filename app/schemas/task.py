@@ -17,5 +17,5 @@ class TaskResponse(BaseModel):
     is_completed: bool
     owner_id: int
 
-    class config:
+    class Config:
         from_attributes = True #instead of dict only it can read data from onject attribute like ORM model
