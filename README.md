@@ -68,3 +68,7 @@ If you have already set up the project, follow these steps to stay updated and r
 * `requirements.txt`: List of Python dependencies.
 
 > **Note:** Ensure your PostgreSQL credentials are correctly configured in your environment variables or configuration file before starting the server.
+
+
+docs link: https://docs.google.com/document/d/1C7-ROTU3SrXHYmSqPQTLsVtbLDLEY9xj39SYnhxFdKg/edit?tab=t.0
+drive link: https://drive.google.com/drive/folders/1GJd4yM7JN9JhAVbfeDrCy4zxw5HAd-zo?usp=drive_link

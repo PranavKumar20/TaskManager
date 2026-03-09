@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Depends
-import jwt
 from app.schemas.auth import LoginRequest, Token
 from sqlalchemy.orm import Session
 from app.api.deps import get_db

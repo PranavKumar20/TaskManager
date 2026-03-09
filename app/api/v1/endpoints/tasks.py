@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from app.api.deps import get_db
 from app.schemas.task import TaskCreate, TaskResponse
 from app.schemas.common import MessageResponse
-from app.services.task_service import create_task, get_all_task, get_task_by_id, delete_task_by_id, update_task_by_id
+from app.services.task_service import create_task, get_all_task, get_task_by_id, delete_task_by_id, update_task_by_id, get_tasks_by_user_id
 
 
 router = APIRouter()
@@ -51,9 +51,9 @@ def update_task(
 ):
     return update_task_by_id(task_id, task_data,db)
 
-@router.get("/{user_id}", response_model=list[TaskResponse])
+@router.get("/user/{user_id}")
 def get_user_tasks(
     user_id: int,
     db: Session = Depends(get_db)
 ):
-    return 
+    return get_tasks_by_user_id(user_id, db)

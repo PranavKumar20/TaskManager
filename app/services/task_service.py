@@ -15,7 +15,7 @@ def create_task(db: Session, task: TaskCreate):
     task = Task(
         title = task.title,
         description = task.description,
-        is_complete = task.is_completed,
+        is_completed = task.is_completed,
         owner_id = task.owner_id
     )
     db.add(task)
