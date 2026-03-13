@@ -5,6 +5,7 @@ from fastapi import HTTPException
 import jwt
 from datetime import datetime, timedelta, timezone
 from app.core.config import settings
+from app.core.security import verify_password
 
 
 #function 1: function to handle signin -> dividing for easy cleanliness -> filter for user, check present or not
@@ -16,18 +17,19 @@ def handle_signin(db: Session, login_data: LoginRequest):
     user = db.query(User).filter(User.email == login_data.email).first()
     if not user:
         raise HTTPException(status_code=404, detail="User no found")
-    if not verify_password(user, login_data):
+    # if not verify_password_normal(user, login_data):
+    #     raise HTTPException(status_code=401, detail="Wrong Credentials")
+    if not verify_password(login_data.password, user.password):
         raise HTTPException(status_code=401, detail="Wrong Credentials")
     return create_access_token(login_data.email, settings.ACCESS_TOKEN_EXPIRE_MINUTES)
 
 
 # later we will use password hashing, hence will will compare hashes 
-def verify_password(user: User, to_check_data: LoginRequest):
-    if user.password == to_check_data.password:
-        return True
-    return False
+# def verify_password_normal(user: User, to_check_data: LoginRequest):
+#     if user.password == to_check_data.password:
+#         return True
+#     return False
         
-
 def create_access_token(data: str, expires_delta: int):
     expire = datetime.now(timezone.utc) + timedelta(minutes=expires_delta)
     to_encode = {

@@ -28,22 +28,22 @@ def get_user(
 ):
     return get_user_by_id(db, user_id)
 
-@router.delete("/{user_id}", response_model=MessageResponse)
-def delete_user(
-    user_id: int,
-    db: Session = Depends(get_db)
-):
-    msg = delete_user_by_id(db, user_id)
-    return {"message": msg}
-
 # @router.delete("/{user_id}", response_model=MessageResponse)
 # def delete_user(
 #     user_id: int,
-#     db: Session = Depends(get_db),
-#     current_user:User = Depends(get_current_user)
+#     db: Session = Depends(get_db)
 # ):
-#     msg = delete_user_by_id(db, user_id, current_user)
+#     msg = delete_user_by_id(db, user_id)
 #     return {"message": msg}
+
+@router.delete("/{user_id}", response_model=MessageResponse)
+def delete_user(
+    user_id: int,
+    db: Session = Depends(get_db),
+    current_user:User = Depends(get_current_user)
+):
+    msg = delete_user_by_id(db, user_id, current_user)
+    return {"message": msg}
 
 @router.put("/{user_id}", response_model=UserResponse)
 def update_user(
