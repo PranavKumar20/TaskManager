@@ -55,10 +55,23 @@ def delete_user_by_id(db: Session, user_id: int, current_user: User):
     db.commit()
     return "user data deleted successfully"
 
-def update_user_by_id(db: Session, user_id: int, user_data):
+# def update_user_by_id(db: Session, user_id: int, user_data):
+#     user = db.get(User, user_id)
+#     if not user:
+#         raise HTTPException(status_code=404, detail="user not found for the provided user_id")
+#     user.name = user_data.name
+#     user.email = user_data.email
+#     user.password = user_data.password
+#     db.commit()
+#     db.refresh(user)
+#     return user
+
+def update_user_by_id(db: Session, user_id: int, user_data, current_user):
     user = db.get(User, user_id)
     if not user:
         raise HTTPException(status_code=404, detail="user not found for the provided user_id")
+    if not user == current_user:
+        raise HTTPException(status_code=403, detail="Forbidden")
     user.name = user_data.name
     user.email = user_data.email
     user.password = user_data.password

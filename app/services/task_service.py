@@ -1,7 +1,9 @@
 from sqlalchemy.orm import Session
 from app.models.task import Task
+from app.models.user import User
 from app.schemas.task import TaskCreate
 from fastapi import HTTPException
+
 
 # service to create a task -> input: TaskCreate schema -> output: newly created Task object
 # service to fetch all tasks -> input: db session -> output: list of all Task objects
@@ -11,7 +13,9 @@ from fastapi import HTTPException
 # service to fetch tasks for a specific user -> input: user_id -> output: list of Task objects owned by user
 
 
-def create_task(db: Session, task: TaskCreate):
+def create_task(db: Session, task: TaskCreate, current_user:User):
+    if not task.owner_id == current_user.id:
+        raise HTTPException(status_code=403, detail="Forbidden")
     task = Task(
         title = task.title,
         description = task.description,
@@ -31,16 +35,20 @@ def get_task_by_id(task_id: int, db: Session):
     task = db.get(Task, task_id)
     return task
 
-def delete_task_by_id(task_id: int, db: Session):
+def delete_task_by_id(task_id: int, db: Session, current_user: User):
     task = db.get(Task, task_id)
+    if not task.owner_id == current_user.id :
+        raise HTTPException(status_code=403, detail="Forbidden")
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
     db.delete(task)
     db.commit()
     return {"message": "Task data deleted successfully"}
 
-def update_task_by_id(task_id: int, task_data: TaskCreate, db: Session):
+def update_task_by_id(task_id: int, task_data: TaskCreate, db: Session, current_user: User):
     task = db.get(Task, task_id)
+    if not task.owner_id == current_user.id :
+        raise HTTPException(status_code=403, detail="Forbidden")
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
     
@@ -53,6 +61,8 @@ def update_task_by_id(task_id: int, task_data: TaskCreate, db: Session):
     db.refresh(task)
     return task
 
-def get_tasks_by_user_id(user_id: int, db: Session):
+def get_tasks_by_user_id(user_id: int, db: Session, current_user: User):
+    if not user_id==current_user.id :
+        raise HTTPException(status_code=403, detail="Forbidden")
     tasks = db.query(Task).filter(Task.owner_id == user_id).all()
     return tasks

@@ -4,7 +4,8 @@ from app.api.deps import get_db
 from app.schemas.task import TaskCreate, TaskResponse
 from app.schemas.common import MessageResponse
 from app.services.task_service import create_task, get_all_task, get_task_by_id, delete_task_by_id, update_task_by_id, get_tasks_by_user_id
-
+from app.api.deps import get_current_user
+from app.models.user import User
 
 router = APIRouter()
 
@@ -19,9 +20,10 @@ router = APIRouter()
 @router.post("/", response_model=TaskResponse)
 def create_new_task(
     task: TaskCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
-    return create_task(db,task)
+    return create_task(db,task,current_user)
 
 @router.get("/", response_model=list[TaskResponse])
 def get_tasks(
@@ -39,21 +41,24 @@ def get_task(
 @router.delete("/{task_id}", response_model=MessageResponse)
 def delete_task(
     task_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
 ):
-    return delete_task_by_id(task_id, db)
+    return delete_task_by_id(task_id, db, current_user)
 
 @router.put("/{task_id}", response_model=TaskResponse)
 def update_task(
     task_id: int,
     task_data: TaskCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
 ):
-    return update_task_by_id(task_id, task_data,db)
+    return update_task_by_id(task_id, task_data,db, current_user)
 
 @router.get("/user/{user_id}")
 def get_user_tasks(
     user_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
 ):
-    return get_tasks_by_user_id(user_id, db)
+    return get_tasks_by_user_id(user_id, db, current_user)

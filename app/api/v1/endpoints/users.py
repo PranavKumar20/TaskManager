@@ -49,7 +49,8 @@ def delete_user(
 def update_user(
     user_id: int,
     user: UserCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user:User = Depends(get_current_user)
 ):
-    return update_user_by_id(db, user_id, user)
+    return update_user_by_id(db, user_id, user,current_user)
     
