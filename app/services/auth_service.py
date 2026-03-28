@@ -21,7 +21,7 @@ def handle_signin(db: Session, login_data: LoginRequest):
     #     raise HTTPException(status_code=401, detail="Wrong Credentials")
     if not verify_password(login_data.password, user.password):
         raise HTTPException(status_code=401, detail="Wrong Credentials")
-    return create_access_token(login_data.email, settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    return create_access_token(login_data.email, settings.ACCESS_TOKEN_EXPIRE_MINUTES, user)
 
 
 # later we will use password hashing, hence will will compare hashes 
@@ -30,11 +30,11 @@ def handle_signin(db: Session, login_data: LoginRequest):
 #         return True
 #     return False
         
-def create_access_token(data: str, expires_delta: int):
+def create_access_token(data: str, expires_delta: int, user: User):
     expire = datetime.now(timezone.utc) + timedelta(minutes=expires_delta)
     to_encode = {
         "sub":data,
         "exp":expire
     }
     encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
-    return {"access_token":encoded_jwt }
+    return {"access_token":encoded_jwt , "user_id": user.id, "user_name":user.name}
